@@ -2,9 +2,9 @@
 // 各画像は縮小せず原寸のまま配置する(列幅・行高さはそれぞれの列/行に含まれる画像の最大サイズに合わせる)
 const Collage = (() => {
   const GAP = 16;
-  const BACKGROUND = "#ffffff";
+  const DEFAULT_BACKGROUND = "#ffffff";
 
-  function buildCollage(canvases) {
+  function buildCollage(canvases, backgroundColor = DEFAULT_BACKGROUND) {
     const count = canvases.length;
     if (count === 0) return null;
 
@@ -41,7 +41,7 @@ const Collage = (() => {
     outputCanvas.width = outputWidth;
     outputCanvas.height = outputHeight;
     const ctx = outputCanvas.getContext("2d");
-    ctx.fillStyle = BACKGROUND;
+    ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, outputWidth, outputHeight);
 
     canvases.forEach((canvas, i) => {

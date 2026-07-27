@@ -13,6 +13,8 @@
   const rearrangeCheckbox = document.getElementById("rearrange-toggle");
   const watermarkCheckbox = document.getElementById("watermark-toggle");
   const showIndividualCheckbox = document.getElementById("show-individual-toggle");
+  const maskColorInput = document.getElementById("mask-color-input");
+  const collageBgColorInput = document.getElementById("collage-bg-color-input");
 
   // items: { id, fileName, image(HTMLImageElement), baseCanvas(透かしなし), processedCanvas(表示・個別DL用、透かしあり) }
   const items = [];
@@ -27,7 +29,8 @@
       maskUsername: maskUsernameCheckbox.checked,
       rearrange: rearrangeCheckbox.checked,
       cropLeftPanel: cropLeftCheckbox.checked,
-      watermark: watermarkCheckbox.checked
+      watermark: watermarkCheckbox.checked,
+      maskColor: maskColorInput.value
     };
   }
 
@@ -43,7 +46,8 @@
     try {
       const options = {
         ...getProcessOptions(),
-        showIndividualResults: showIndividualCheckbox.checked
+        showIndividualResults: showIndividualCheckbox.checked,
+        collageBgColor: collageBgColorInput.value
       };
       localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(options));
     } catch (err) {
@@ -66,6 +70,8 @@
     rearrangeCheckbox.checked = !!saved.rearrange;
     cropLeftCheckbox.checked = !!saved.cropLeftPanel;
     watermarkCheckbox.checked = !!saved.watermark;
+    maskColorInput.value = saved.maskColor || "#ffffff";
+    collageBgColorInput.value = saved.collageBgColor || "#ffffff";
     // 未保存(旧バージョンの保存データ)の場合はデフォルトの「表示」を維持する
     showIndividualCheckbox.checked = saved.showIndividualResults !== false;
     updateMaskCheckboxAvailability();
@@ -80,6 +86,12 @@
   function handleDisplayOptionChange() {
     saveOptions();
     renderResults();
+  }
+
+  // まとめ画像の背景色は buildCollage の内部でのみ使うため、各画像の再加工(reprocessAll)は不要
+  function handleCollageColorChange() {
+    saveOptions();
+    buildCollage();
   }
 
   async function addFiles(fileList) {
@@ -165,7 +177,7 @@
   function buildCollage() {
     // 集約画像は個々の画像の透かしではなく、集約後の1枚に対して透かしを1つだけ付ける
     const canvases = items.map((item) => item.baseCanvas).filter(Boolean);
-    const rawCollageCanvas = Collage.buildCollage(canvases);
+    const rawCollageCanvas = Collage.buildCollage(canvases, collageBgColorInput.value);
     collagePreview.innerHTML = "";
     if (!rawCollageCanvas) return;
 
@@ -203,6 +215,8 @@
   rearrangeCheckbox.addEventListener("change", handleOptionChange);
   watermarkCheckbox.addEventListener("change", handleOptionChange);
   showIndividualCheckbox.addEventListener("change", handleDisplayOptionChange);
+  maskColorInput.addEventListener("input", handleOptionChange);
+  collageBgColorInput.addEventListener("input", handleCollageColorChange);
 
   // 前回保存されたオプションを復元してから初期描画する
   loadOptions();

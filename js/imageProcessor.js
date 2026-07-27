@@ -83,7 +83,7 @@ const ImageProcessor = (() => {
   }
 
   // プレイ日付・ユーザー名を単色で塗りつぶす(画像サイズは変えず、その場に塗るだけ)
-  function applyPrivacyMask(canvas, maskOptions) {
+  function applyPrivacyMask(canvas, maskOptions, maskColor) {
     const hasMask = Object.values(maskOptions).some(Boolean);
     if (!hasMask) return canvas;
 
@@ -93,7 +93,7 @@ const ImageProcessor = (() => {
     for (const region of config.regions) {
       if (!region.maskable || !maskOptions[region.id]) continue;
       const rectPx = ratioRectToPixels(region.rect, masked.width, masked.height);
-      ctx.fillStyle = config.maskColor;
+      ctx.fillStyle = maskColor;
       ctx.fillRect(rectPx.x, rectPx.y, rectPx.w, rectPx.h);
     }
     return masked;
@@ -175,19 +175,26 @@ const ImageProcessor = (() => {
     return result;
   }
 
-  // options: { maskDate, maskUsername, rearrange, cropLeftPanel }
+  // options: { maskDate, maskUsername, rearrange, cropLeftPanel, maskColor }
   //   maskDate/maskUsername: プライバシーマスク(独立してON/OFF可能)
   //   rearrange: layoutMoves を適用するか(OFFなら基本トリミング(+マスク)結果をそのまま返す)
   //   cropLeftPanel: 左側(日付・ユーザー名・キャラクター)を切り落とし、右側の判定情報パネルだけを残すか
   //     ON時、プレイ日付・ユーザー名はどのみち切り落とされるため maskDate/maskUsername の値に関わらず
   //     結果は同じになるが、判定内訳の位置調整パラメータへの影響を避けるため、あえて特別扱いせず
   //     これまで通りの手順で画像を作った後の最終ステップとして切り落としている。
+  //   maskColor: プライバシーマスクの塗りつぶし色(省略時は LayoutConfig.maskColor)
   //
   // 注意: ツール名の透かし(applyWatermark)はここでは適用しない。集約画像では
   // 透かしを1箇所だけに表示したいため、透かしは呼び出し側(main.js)で
   // 個別表示用・集約画像用にそれぞれ1回だけ適用する。
   function processResultImage(image, options = {}) {
-    const { maskDate = false, maskUsername = false, rearrange = false, cropLeftPanel = false } = options;
+    const {
+      maskDate = false,
+      maskUsername = false,
+      rearrange = false,
+      cropLeftPanel = false,
+      maskColor = LayoutConfig.maskColor
+    } = options;
 
     const sourceCanvas = document.createElement("canvas");
     sourceCanvas.width = image.naturalWidth;
@@ -199,7 +206,7 @@ const ImageProcessor = (() => {
     const trimmedCanvas = cropToCanvas(sourceCanvas, 0, bounds.top, sourceCanvas.width, bounds.bottom - bounds.top);
 
     // 2. プライバシーマスク(オプション)
-    const maskedCanvas = applyPrivacyMask(trimmedCanvas, { playDate: maskDate, username: maskUsername });
+    const maskedCanvas = applyPrivacyMask(trimmedCanvas, { playDate: maskDate, username: maskUsername }, maskColor);
 
     // 3. 一部要素の位置移動(オプション)
     const rearrangedCanvas = rearrange ? applyLayoutMoves(maskedCanvas) : maskedCanvas;
