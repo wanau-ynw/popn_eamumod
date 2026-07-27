@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マスク位置調整ツール(開発者用) - pop'n music リザルト整形ツール</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/mask-editor.css">
+<link rel="icon" type="image/png" href="icon/favicon.png">
+</head>
+<body>
+<header class="app-header">
+  <h1>マスク位置調整ツール(開発者用)</h1>
+  <p class="app-subtitle">プレイ日付・ユーザー名マスクの位置を、プレビューを見ながら調整するためのツールです。</p>
+</header>
+
+<main>
+  <section class="panel" id="upload-panel">
+    <h2>1. サンプル画像を読み込み</h2>
+    <p class="option-note">起動時は samples/sample1.png を自動的に読み込みます。別の画像で確認したい場合はここから読み込んでください。</p>
+    <div id="drop-zone" class="drop-zone">
+      <p>ここに画像をドラッグ&amp;ドロップ<br>または</p>
+      <label class="file-select-button">
+        ファイルを選択
+        <input type="file" id="file-input" accept="image/*" hidden>
+      </label>
+    </div>
+  </section>
+
+  <section class="panel" id="editor-panel">
+    <h2>2. マスク位置を調整</h2>
+    <p class="option-note">矩形をドラッグで移動、右下の丸ハンドルでリサイズできます。数値を直接入力しても調整できます。</p>
+    <div id="editor-stage" class="editor-stage">
+      <p id="editor-empty" class="empty-message">画像を読み込み中です...</p>
+    </div>
+    <div id="editor-fields"></div>
+  </section>
+
+  <section class="panel" id="output-panel">
+    <h2>3. 座標を出力</h2>
+    <p class="option-note">この内容を js/layoutConfig.js の regions にそのまま貼り付けられます。</p>
+    <textarea id="output-code" class="output-code" readonly rows="4"></textarea>
+    <button type="button" id="copy-button" class="file-select-button">コピー</button>
+    <span id="copy-status" class="copy-status"></span>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <p>このページは開発用ツールです。一般利用者向けの機能ではありません。</p>
+</footer>
+
+<script src="js/layoutConfig.js"></script>
+<script src="js/imageProcessor.js"></script>
+<script src="js/maskEditor.js"></script>
+</body>
+</html>

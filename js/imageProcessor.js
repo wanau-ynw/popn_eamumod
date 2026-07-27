@@ -175,6 +175,19 @@ const ImageProcessor = (() => {
     return result;
   }
 
+  // マスク位置調整ツール(mask-editor.html)向け: 自動トリミングのみを適用した画像を返す。
+  // マスク領域(LayoutConfig.regions)の比率座標はこの画像を基準にしているため、
+  // 位置調整時のプレビューにはマスクを塗る前のこの画像を使う。
+  function getTrimmedCanvas(image) {
+    const sourceCanvas = document.createElement("canvas");
+    sourceCanvas.width = image.naturalWidth;
+    sourceCanvas.height = image.naturalHeight;
+    sourceCanvas.getContext("2d").drawImage(image, 0, 0);
+
+    const bounds = detectVerticalContentBounds(sourceCanvas, LayoutConfig.edgeDetection);
+    return cropToCanvas(sourceCanvas, 0, bounds.top, sourceCanvas.width, bounds.bottom - bounds.top);
+  }
+
   // options: { maskDate, maskUsername, rearrange, cropLeftPanel, maskColor }
   //   maskDate/maskUsername: プライバシーマスク(独立してON/OFF可能)
   //   rearrange: layoutMoves を適用するか(OFFなら基本トリミング(+マスク)結果をそのまま返す)
@@ -215,5 +228,5 @@ const ImageProcessor = (() => {
     return applyRightPanelCrop(rearrangedCanvas, cropLeftPanel);
   }
 
-  return { loadImageFromFile, processResultImage, applyWatermark };
+  return { loadImageFromFile, processResultImage, applyWatermark, getTrimmedCanvas };
 })();

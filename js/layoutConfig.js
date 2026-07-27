@@ -16,8 +16,8 @@ const LayoutConfig = {
 
   // regions: マスク機能(該当箇所を単色塗り)で使う領域(比率座標、自動トリミング後の画像基準)
   regions: [
-    { id: "playDate", label: "プレイ日時", rect: { x: 0.00, y: 0.00, w: 0.255, h: 0.115 }, maskable: true },
-    { id: "username", label: "ユーザー名", rect: { x: 0.255, y: 0.00, w: 0.165, h: 0.115 }, maskable: true }
+    { id: "playDate", label: "プレイ日時", rect: { x: 0.0185, y: 0.038, w: 0.2324, h: 0.064 }, maskable: true },
+    { id: "username", label: "ユーザー名", rect: { x: 0.2485, y: 0.038, w: 0.1723, h: 0.064 }, maskable: true }
   ],
 
   // マスクオプションON時に塗りつぶす色
