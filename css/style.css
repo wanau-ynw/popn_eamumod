@@ -1,0 +1,187 @@
+:root {
+  --color-bg: #f5f6fa;
+  --color-panel: #ffffff;
+  --color-border: #dcdfe6;
+  --color-accent: #ff6f91;
+  --color-accent-dark: #e34c73;
+  --color-text: #2f2f3a;
+  --color-text-muted: #6b6f7a;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.app-header {
+  padding: 24px 16px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-accent), #ffc371);
+  color: #ffffff;
+}
+
+.app-header h1 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+}
+
+.app-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  border-left: 4px solid var(--color-accent);
+  padding-left: 8px;
+}
+
+.drop-zone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.drop-zone.drag-over {
+  border-color: var(--color-accent);
+  background-color: #fff5f7;
+}
+
+.file-select-button {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 20px;
+  background: var(--color-accent);
+  color: #ffffff;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.file-select-button:hover {
+  background: var(--color-accent-dark);
+}
+
+.option-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.option-note {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}
+
+.empty-message {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.results-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.result-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+  background: #fafafa;
+}
+
+.result-card canvas {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+}
+
+.result-card .result-filename {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  word-break: break-all;
+  margin: 8px 0;
+}
+
+.result-card button {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.result-card button:hover {
+  background: var(--color-accent-dark);
+}
+
+.remove-button {
+  background: transparent !important;
+  color: var(--color-text-muted) !important;
+  border: 1px solid var(--color-border) !important;
+  margin-left: 4px;
+}
+
+.collage-preview {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.collage-preview canvas {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+}
+
+.collage-preview .download-link {
+  display: inline-block;
+  margin-top: 12px;
+}
+
+.app-footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  padding: 16px;
+}
+
+.app-footer a {
+  color: var(--color-accent-dark);
+}
