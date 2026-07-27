@@ -1,10 +1,10 @@
 // 複数の加工済みリザルト画像を、枚数可変の自動グリッドで1枚に集約する
 // 各画像は縮小せず原寸のまま配置する(列幅・行高さはそれぞれの列/行に含まれる画像の最大サイズに合わせる)
 const Collage = (() => {
-  const GAP = 16;
+  const DEFAULT_GAP = 16;
   const DEFAULT_BACKGROUND = "#ffffff";
 
-  function buildCollage(canvases, backgroundColor = DEFAULT_BACKGROUND) {
+  function buildCollage(canvases, backgroundColor = DEFAULT_BACKGROUND, gap = DEFAULT_GAP) {
     const count = canvases.length;
     if (count === 0) return null;
 
@@ -21,17 +21,17 @@ const Collage = (() => {
     });
 
     const colOffsets = [];
-    let xAcc = GAP;
+    let xAcc = gap;
     colWidths.forEach((w) => {
       colOffsets.push(xAcc);
-      xAcc += w + GAP;
+      xAcc += w + gap;
     });
 
     const rowOffsets = [];
-    let yAcc = GAP;
+    let yAcc = gap;
     rowHeights.forEach((h) => {
       rowOffsets.push(yAcc);
-      yAcc += h + GAP;
+      yAcc += h + gap;
     });
 
     const outputWidth = xAcc;
@@ -57,5 +57,5 @@ const Collage = (() => {
     return outputCanvas;
   }
 
-  return { buildCollage };
+  return { buildCollage, DEFAULT_GAP, DEFAULT_BACKGROUND };
 })();

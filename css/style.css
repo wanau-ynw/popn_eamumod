@@ -93,20 +93,46 @@ main {
   white-space: nowrap;
 }
 
-.option-color {
+.option-row {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
 }
 
-.option-color input[type="color"] {
+.option-row-label {
+  flex: 0 0 auto;
+}
+
+.option-row input[type="color"] {
   width: 40px;
   height: 28px;
   padding: 0;
   border: 1px solid var(--color-border);
   border-radius: 4px;
   cursor: pointer;
+}
+
+.option-row input[type="number"] {
+  width: 80px;
+  padding: 4px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.reset-button {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.reset-button:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
 }
 
 .drop-zone {

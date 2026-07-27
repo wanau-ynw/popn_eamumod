@@ -77,14 +77,21 @@
       <span>詳細設定</span>
       <span class="panel-toggle-label" id="advanced-settings-panel-toggle-label"></span>
     </summary>
-    <label class="option-color">
-      プレイ日付・ユーザー名を隠す色
+    <div class="option-row">
+      <span class="option-row-label">プレイ日付・ユーザー名を隠す色</span>
       <input type="color" id="mask-color-input" value="#ffffff">
-    </label>
-    <label class="option-color">
-      まとめ画像の背景色
+      <button type="button" class="reset-button" id="mask-color-reset">デフォルトに戻す</button>
+    </div>
+    <div class="option-row">
+      <span class="option-row-label">まとめ画像の背景色</span>
       <input type="color" id="collage-bg-color-input" value="#ffffff">
-    </label>
+      <button type="button" class="reset-button" id="collage-bg-color-reset">デフォルトに戻す</button>
+    </div>
+    <div class="option-row">
+      <span class="option-row-label">まとめ画像の余白(px)</span>
+      <input type="number" id="collage-gap-input" min="0" max="300" step="1" value="16">
+      <button type="button" class="reset-button" id="collage-gap-reset">デフォルトに戻す</button>
+    </div>
   </details>
 
   <section class="panel" id="results-panel">

@@ -14,7 +14,11 @@
   const watermarkCheckbox = document.getElementById("watermark-toggle");
   const showIndividualCheckbox = document.getElementById("show-individual-toggle");
   const maskColorInput = document.getElementById("mask-color-input");
+  const maskColorReset = document.getElementById("mask-color-reset");
   const collageBgColorInput = document.getElementById("collage-bg-color-input");
+  const collageBgColorReset = document.getElementById("collage-bg-color-reset");
+  const collageGapInput = document.getElementById("collage-gap-input");
+  const collageGapReset = document.getElementById("collage-gap-reset");
   const optionsPanel = document.getElementById("options-panel");
   const optionsPanelToggleLabel = document.getElementById("options-panel-toggle-label");
   const advancedSettingsPanel = document.getElementById("advanced-settings-panel");
@@ -57,6 +61,7 @@
         ...getProcessOptions(),
         showIndividualResults: showIndividualCheckbox.checked,
         collageBgColor: collageBgColorInput.value,
+        collageGap: collageGapInput.value,
         optionsPanelOpen: optionsPanel.open
       };
       localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(options));
@@ -80,8 +85,9 @@
     rearrangeCheckbox.checked = !!saved.rearrange;
     cropLeftCheckbox.checked = !!saved.cropLeftPanel;
     watermarkCheckbox.checked = !!saved.watermark;
-    maskColorInput.value = saved.maskColor || "#ffffff";
-    collageBgColorInput.value = saved.collageBgColor || "#ffffff";
+    maskColorInput.value = saved.maskColor || LayoutConfig.maskColor;
+    collageBgColorInput.value = saved.collageBgColor || Collage.DEFAULT_BACKGROUND;
+    collageGapInput.value = saved.collageGap != null ? saved.collageGap : Collage.DEFAULT_GAP;
     // 未保存(旧バージョンの保存データ)の場合はデフォルトの「表示」を維持する
     showIndividualCheckbox.checked = saved.showIndividualResults !== false;
     // 未保存の場合はデフォルトの「開いた状態」を維持する
@@ -101,8 +107,8 @@
     renderResults();
   }
 
-  // まとめ画像の背景色は buildCollage の内部でのみ使うため、各画像の再加工(reprocessAll)は不要
-  function handleCollageColorChange() {
+  // まとめ画像の背景色・余白は buildCollage の内部でのみ使うため、各画像の再加工(reprocessAll)は不要
+  function handleCollageSettingChange() {
     saveOptions();
     buildCollage();
   }
@@ -190,7 +196,8 @@
   function buildCollage() {
     // 集約画像は個々の画像の透かしではなく、集約後の1枚に対して透かしを1つだけ付ける
     const canvases = items.map((item) => item.baseCanvas).filter(Boolean);
-    const rawCollageCanvas = Collage.buildCollage(canvases, collageBgColorInput.value);
+    const gap = Math.max(0, Number(collageGapInput.value) || 0);
+    const rawCollageCanvas = Collage.buildCollage(canvases, collageBgColorInput.value, gap);
     collagePreview.innerHTML = "";
     if (!rawCollageCanvas) return;
 
@@ -229,7 +236,21 @@
   watermarkCheckbox.addEventListener("change", handleOptionChange);
   showIndividualCheckbox.addEventListener("change", handleDisplayOptionChange);
   maskColorInput.addEventListener("input", handleOptionChange);
-  collageBgColorInput.addEventListener("input", handleCollageColorChange);
+  collageBgColorInput.addEventListener("input", handleCollageSettingChange);
+  collageGapInput.addEventListener("input", handleCollageSettingChange);
+
+  maskColorReset.addEventListener("click", () => {
+    maskColorInput.value = LayoutConfig.maskColor;
+    handleOptionChange();
+  });
+  collageBgColorReset.addEventListener("click", () => {
+    collageBgColorInput.value = Collage.DEFAULT_BACKGROUND;
+    handleCollageSettingChange();
+  });
+  collageGapReset.addEventListener("click", () => {
+    collageGapInput.value = Collage.DEFAULT_GAP;
+    handleCollageSettingChange();
+  });
 
   optionsPanel.addEventListener("toggle", () => {
     updatePanelToggleLabel(optionsPanel, optionsPanelToggleLabel);
