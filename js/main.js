@@ -15,6 +15,10 @@
   const showIndividualCheckbox = document.getElementById("show-individual-toggle");
   const maskColorInput = document.getElementById("mask-color-input");
   const collageBgColorInput = document.getElementById("collage-bg-color-input");
+  const optionsPanel = document.getElementById("options-panel");
+  const optionsPanelToggleLabel = document.getElementById("options-panel-toggle-label");
+  const advancedSettingsPanel = document.getElementById("advanced-settings-panel");
+  const advancedSettingsPanelToggleLabel = document.getElementById("advanced-settings-panel-toggle-label");
 
   // items: { id, fileName, image(HTMLImageElement), baseCanvas(透かしなし), processedCanvas(表示・個別DL用、透かしあり) }
   const items = [];
@@ -42,12 +46,18 @@
     maskUsernameCheckbox.disabled = disabled;
   }
 
+  // <details>要素の開閉状態を表すラベルを更新する(閉じているときに「開けること」がわかるようにする)
+  function updatePanelToggleLabel(panel, labelEl) {
+    labelEl.textContent = panel.open ? "▲ 閉じる" : "▼ 開く";
+  }
+
   function saveOptions() {
     try {
       const options = {
         ...getProcessOptions(),
         showIndividualResults: showIndividualCheckbox.checked,
-        collageBgColor: collageBgColorInput.value
+        collageBgColor: collageBgColorInput.value,
+        optionsPanelOpen: optionsPanel.open
       };
       localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(options));
     } catch (err) {
@@ -74,7 +84,10 @@
     collageBgColorInput.value = saved.collageBgColor || "#ffffff";
     // 未保存(旧バージョンの保存データ)の場合はデフォルトの「表示」を維持する
     showIndividualCheckbox.checked = saved.showIndividualResults !== false;
+    // 未保存の場合はデフォルトの「開いた状態」を維持する
+    optionsPanel.open = saved.optionsPanelOpen !== false;
     updateMaskCheckboxAvailability();
+    updatePanelToggleLabel(optionsPanel, optionsPanelToggleLabel);
   }
 
   function handleOptionChange() {
@@ -217,6 +230,16 @@
   showIndividualCheckbox.addEventListener("change", handleDisplayOptionChange);
   maskColorInput.addEventListener("input", handleOptionChange);
   collageBgColorInput.addEventListener("input", handleCollageColorChange);
+
+  optionsPanel.addEventListener("toggle", () => {
+    updatePanelToggleLabel(optionsPanel, optionsPanelToggleLabel);
+    saveOptions();
+  });
+  advancedSettingsPanel.addEventListener("toggle", () => {
+    updatePanelToggleLabel(advancedSettingsPanel, advancedSettingsPanelToggleLabel);
+  });
+  updatePanelToggleLabel(optionsPanel, optionsPanelToggleLabel);
+  updatePanelToggleLabel(advancedSettingsPanel, advancedSettingsPanelToggleLabel);
 
   // 前回保存されたオプションを復元してから初期描画する
   loadOptions();

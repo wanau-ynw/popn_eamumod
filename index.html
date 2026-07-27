@@ -40,8 +40,11 @@
     <p class="option-note">スマホの上部メニューなど機種依存の余白は、画像の上下から自動検出して切り取ります。特別な操作は不要です。</p>
   </section>
 
-  <section class="panel" id="options-panel">
-    <h2>3. オプション</h2>
+  <details class="panel" id="options-panel" open>
+    <summary>
+      <span>3. オプション</span>
+      <span class="panel-toggle-label" id="options-panel-toggle-label"></span>
+    </summary>
     <label class="option-checkbox">
       <input type="checkbox" id="rearrange-toggle">
       判定内訳(BAD・COMBOなど)を見やすく並べ替える
@@ -67,10 +70,13 @@
       画像にツール名を表示する(ツールを広めるため、ぜひご協力ください)
     </label>
     <p class="option-note">※ このツールはすべてブラウザ内で処理されます。画像が外部サーバーに送信されることはありません。</p>
-  </section>
+  </details>
 
   <details class="panel" id="advanced-settings-panel">
-    <summary>詳細設定</summary>
+    <summary>
+      <span>詳細設定</span>
+      <span class="panel-toggle-label" id="advanced-settings-panel-toggle-label"></span>
+    </summary>
     <label class="option-color">
       プレイ日付・ユーザー名を隠す色
       <input type="color" id="mask-color-input" value="#ffffff">
