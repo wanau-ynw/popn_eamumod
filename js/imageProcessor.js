@@ -142,6 +142,17 @@ const ImageProcessor = (() => {
     return result;
   }
 
+  // 「左側をトリミング」オプション用: 画像の左側(プレイ日付・ユーザー名・キャラクターイラスト)を
+  // 切り落とし、右側の判定情報パネルだけを残す。マスク・並べ替えなど他の加工をすべて適用した
+  // 「これまで通りのルールで作った画像」に対して最後に適用することで、判定内訳の位置調整パラメータ
+  // (比率座標)に影響を与えないようにしている。
+  function applyRightPanelCrop(canvas, cropLeftPanel) {
+    if (!cropLeftPanel) return canvas;
+
+    const cropX = Math.round(canvas.width * LayoutConfig.rightPanelCrop.x);
+    return cropToCanvas(canvas, cropX, 0, canvas.width - cropX, canvas.height);
+  }
+
   // 画像左下にツール名の透かしを小さく描画する(画像サイズは変えず、その場に描くだけ)
   function applyWatermark(canvas, showWatermark) {
     if (!showWatermark) return canvas;
@@ -164,15 +175,19 @@ const ImageProcessor = (() => {
     return result;
   }
 
-  // options: { maskDate, maskUsername, rearrange }
+  // options: { maskDate, maskUsername, rearrange, cropLeftPanel }
   //   maskDate/maskUsername: プライバシーマスク(独立してON/OFF可能)
   //   rearrange: layoutMoves を適用するか(OFFなら基本トリミング(+マスク)結果をそのまま返す)
+  //   cropLeftPanel: 左側(日付・ユーザー名・キャラクター)を切り落とし、右側の判定情報パネルだけを残すか
+  //     ON時、プレイ日付・ユーザー名はどのみち切り落とされるため maskDate/maskUsername の値に関わらず
+  //     結果は同じになるが、判定内訳の位置調整パラメータへの影響を避けるため、あえて特別扱いせず
+  //     これまで通りの手順で画像を作った後の最終ステップとして切り落としている。
   //
   // 注意: ツール名の透かし(applyWatermark)はここでは適用しない。集約画像では
   // 透かしを1箇所だけに表示したいため、透かしは呼び出し側(main.js)で
   // 個別表示用・集約画像用にそれぞれ1回だけ適用する。
   function processResultImage(image, options = {}) {
-    const { maskDate = false, maskUsername = false, rearrange = false } = options;
+    const { maskDate = false, maskUsername = false, rearrange = false, cropLeftPanel = false } = options;
 
     const sourceCanvas = document.createElement("canvas");
     sourceCanvas.width = image.naturalWidth;
@@ -187,7 +202,10 @@ const ImageProcessor = (() => {
     const maskedCanvas = applyPrivacyMask(trimmedCanvas, { playDate: maskDate, username: maskUsername });
 
     // 3. 一部要素の位置移動(オプション)
-    return rearrange ? applyLayoutMoves(maskedCanvas) : maskedCanvas;
+    const rearrangedCanvas = rearrange ? applyLayoutMoves(maskedCanvas) : maskedCanvas;
+
+    // 4. 左側パネルの切り落とし(オプション)
+    return applyRightPanelCrop(rearrangedCanvas, cropLeftPanel);
   }
 
   return { loadImageFromFile, processResultImage, applyWatermark };

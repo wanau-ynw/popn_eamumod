@@ -19,7 +19,7 @@
 <body>
 <header class="app-header">
   <h1>pop'n music リザルト整形ツール</h1>
-  <p class="app-subtitle">e-amusementアプリのプレイシェア機能で表示されたゲームリザルト画面を、SNS投稿しやすい形にトリミング・並べ替えします。</p>
+  <p class="app-subtitle">e-amusementアプリのプレーシェア機能で表示されたリザルト画面を、SNS投稿しやすい形に加工します。</p>
 </header>
 
 <main>
@@ -35,7 +35,7 @@
   </section>
 
   <section class="panel" id="trim-panel">
-    <h2>2. 余白の自動トリミング</h2>
+    <h2>2. 余白の自動削除</h2>
     <p class="option-note">スマホの上部メニューなど機種依存の余白は、画像の上下から自動検出して切り取ります。特別な操作は不要です。</p>
   </section>
 
@@ -54,12 +54,16 @@
       ユーザー名を隠す
     </label>
     <label class="option-checkbox">
-      <input type="checkbox" id="watermark-toggle" checked>
-      画像の左下にツール名を表示する
+      <input type="checkbox" id="crop-left-toggle">
+      リザルトの左側を削除して右側の情報だけ表示する
     </label>
     <label class="option-checkbox">
       <input type="checkbox" id="show-individual-toggle" checked>
-      それぞれのリザルトの加工結果画像を個別に表示する
+      それぞれのリザルトの加工結果を個別に表示する
+    </label>
+    <label class="option-checkbox">
+      <input type="checkbox" id="watermark-toggle" checked>
+      画像にツール名を表示する(ツールを広めるため、ぜひご協力ください)
     </label>
     <p class="option-note">※ このツールはすべてブラウザ内で処理されます。画像が外部サーバーに送信されることはありません。</p>
   </section>
@@ -72,7 +76,6 @@
 
   <section class="panel" id="collage-panel" hidden>
     <h2>5. まとめて1枚に集約</h2>
-    <p class="option-note">画像の追加・削除やオプション変更に合わせて自動的に更新されます。</p>
     <div id="collage-preview" class="collage-preview"></div>
   </section>
 </main>

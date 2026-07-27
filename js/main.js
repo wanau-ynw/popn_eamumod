@@ -9,6 +9,7 @@
   const collagePreview = document.getElementById("collage-preview");
   const maskDateCheckbox = document.getElementById("mask-date");
   const maskUsernameCheckbox = document.getElementById("mask-username");
+  const cropLeftCheckbox = document.getElementById("crop-left-toggle");
   const rearrangeCheckbox = document.getElementById("rearrange-toggle");
   const watermarkCheckbox = document.getElementById("watermark-toggle");
   const showIndividualCheckbox = document.getElementById("show-individual-toggle");
@@ -25,8 +26,17 @@
       maskDate: maskDateCheckbox.checked,
       maskUsername: maskUsernameCheckbox.checked,
       rearrange: rearrangeCheckbox.checked,
+      cropLeftPanel: cropLeftCheckbox.checked,
       watermark: watermarkCheckbox.checked
     };
+  }
+
+  // 左側トリミングON時はプレイ日付・ユーザー名がどのみち切り落とされ、
+  // マスクのチェックが結果に影響しなくなるため、操作できないようにして紛らわしさを避ける
+  function updateMaskCheckboxAvailability() {
+    const disabled = cropLeftCheckbox.checked;
+    maskDateCheckbox.disabled = disabled;
+    maskUsernameCheckbox.disabled = disabled;
   }
 
   function saveOptions() {
@@ -54,12 +64,15 @@
     maskDateCheckbox.checked = !!saved.maskDate;
     maskUsernameCheckbox.checked = !!saved.maskUsername;
     rearrangeCheckbox.checked = !!saved.rearrange;
+    cropLeftCheckbox.checked = !!saved.cropLeftPanel;
     watermarkCheckbox.checked = !!saved.watermark;
     // 未保存(旧バージョンの保存データ)の場合はデフォルトの「表示」を維持する
     showIndividualCheckbox.checked = saved.showIndividualResults !== false;
+    updateMaskCheckboxAvailability();
   }
 
   function handleOptionChange() {
+    updateMaskCheckboxAvailability();
     saveOptions();
     reprocessAll();
   }
@@ -186,6 +199,7 @@
 
   maskDateCheckbox.addEventListener("change", handleOptionChange);
   maskUsernameCheckbox.addEventListener("change", handleOptionChange);
+  cropLeftCheckbox.addEventListener("change", handleOptionChange);
   rearrangeCheckbox.addEventListener("change", handleOptionChange);
   watermarkCheckbox.addEventListener("change", handleOptionChange);
   showIndividualCheckbox.addEventListener("change", handleDisplayOptionChange);
